@@ -17,4 +17,7 @@ class WeatherResponse {
     public WeatherData[] getDataSeries() {
         return dataSeries;
     }
+     public void setDataseries(WeatherData[] dataseries) {
+        this.dataSeries = dataseries;
+    }
 }

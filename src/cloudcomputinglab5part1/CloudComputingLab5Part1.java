@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import java.util.Arrays;
+import java.util.List;
 
 public class CloudComputingLab5Part1 {
     public static void main(String[] args) {
@@ -35,6 +37,7 @@ public class CloudComputingLab5Part1 {
 
             // Step 3: Construct the URL
             URL url = new URL("https://www.7timer.info/bin/civillight.php?" + convertedParamsToString);
+            System.out.println(url);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.connect();
@@ -61,24 +64,40 @@ public class CloudComputingLab5Part1 {
                 // Step 6: Parse JSON using Gson
                 Gson gson = new GsonBuilder().create();
                 WeatherResponse weatherResponse = gson.fromJson(content.toString(), WeatherResponse.class);
+                WeatherData[] weatherArray = weatherResponse.getDataSeries();
+                List<WeatherData> weatherList = Arrays.asList(weatherArray);
 
+// Print each day's weather details
+weatherList.forEach(weather -> {
+    System.out.println("Date: " + weather.getDate());
+    System.out.println("Weather: " + weather.getWeather());
+    System.out.println("Max Temperature: " + weather.getTemp2M().getMax());
+    System.out.println("Min Temperature: " + weather.getTemp2M().getMin());
+    System.out.println("Wind Speed: " + weather.getWind10MMax());
+    System.out.println("-------------");
+});
+                
+                //List<WeatherResponse> weatherresponse = Arrays.asList(weatherResponse);
+                //weatherresponse.forEach(action);
                 // Step 7: Display specific weather information
-                if (weatherResponse.getDataSeries() != null && weatherResponse.getDataSeries().length >0) {
-                    WeatherData weatherData = weatherResponse.getDataSeries()[0]; // First day's data
-                    System.out.println("Date: " + weatherData.getDate());
-                    System.out.println("Weather: " + weatherData.getWeather());
+                 /*if (weatherResponse.getDataSeries() != null && weatherResponse.getDataSeries().length > 0) {
+                    for (WeatherData weatherData : weatherResponse.getDataSeries()) {
+                        System.out.println("Date: " + weatherData.getDate());
+                        System.out.println("Weather: " + weatherData.getWeather());
 
-                    if (weatherData.getTemp2M() != null) {
-                        System.out.println("Max Temperature: " + weatherData.getTemp2M().getMax());
-                        System.out.println("Min Temperature: " + weatherData.getTemp2M().getMin());
-                    } else {
-                        System.out.println("Temperature data is not available.");
+                        if (weatherData.getTemp2M() != null) {
+                            System.out.println("Max Temperature: " + weatherData.getTemp2M().getMax());
+                            System.out.println("Min Temperature: " + weatherData.getTemp2M().getMin());
+                        } else {
+                            System.out.println("Temperature data is not available.");
+                        }
+
+                        System.out.println("Wind Speed: " + weatherData.getWind10MMax());
+                        System.out.println(); // Blank line for readability
                     }
-
-                    System.out.println("Wind Speed: " + weatherData.getWind10MMax());
                 } else {
                     System.out.println("Weather data is not available.");
-                }
+                }*/
             } else {
                 System.out.println("Error: Unable to fetch weather data, Response code: " + responseCode);
             }
